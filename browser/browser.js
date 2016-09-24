@@ -1,21 +1,28 @@
 window.onresize = doLayout;
 var isLoading = false;
 
+function TabController() {
+	this.setTabSelected = function(tab){
+
+	}, 
+	this.setTabNotSelected = function(){
+
+	}
+}
+
+function BrowserController() { 
+	this.backButtonClicked = function() {
+
+	}
+}
+
 $(document).ready(function(){
 	var webview = document.querySelector('webview');
 	var tabID = 0; 
 	var selectedID = 0; 
 	var tabTemplate = null;
 	var webviewTemplate = null;
-
-	var TabSet = { 
-		tab : null, 
-		webview : null,
-		
-		setTabTitle: function(title) { 
-			this.tab.innerHTML = title;
-		}
-	}
+	var selectedTab = null;
 
 	doLayout();
 
@@ -34,7 +41,7 @@ $(document).ready(function(){
 
 	function setTabSelected(tab){
 		tab.classList.add('tab-selected');
-
+		selectedTab = tab;
 		return tab;
 	}
 
@@ -64,10 +71,17 @@ $(document).ready(function(){
 		_retTab = document.querySelector('#tab-'+tabID);
 		tabID++;
 
+		setTabNotSelected(getSelectedTab);
+		setTabSelected(_retTab);
+
 		return {
 			tab: _retTab,
 			tabWebview: _retWebView
 		}
+	}
+
+	function removeTab(tab){
+
 	}
 
 	function setTabTitle(tab, title){ 
@@ -78,7 +92,6 @@ $(document).ready(function(){
 	//Add the first tab when the browser loads up
 	var tabData = addNewTab("New Tab"); //TODO(Demetry): Change this to the home page label
 	webview = tabData.tabWebiew;
-	setTabSelected(tabData.tab);
 
 	addTabButton.click(function(){ 		
 		if(tabID < 9){ //TODO: Fix this to hide and make smaller
@@ -221,8 +234,17 @@ $(document).ready(function(){
 			case 189:
 				event.preventDefault();
 				decreaseZoom();
+				break; 
+			case 48:
+				event.preventDefault();
+				showHistory(); 
+				break;
 			}
 		}
+	}
+
+	function showHistory(){
+		console.log('Not Implemented Yet!');
 	}
 
 	function handleLoadCommit() {

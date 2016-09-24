@@ -1,6 +1,8 @@
 var app = require('electron').app;
 const {BrowserWindow} = require('electron');
 
+
+
 app.on('window-all-closed', function() {
   app.quit();
 });
