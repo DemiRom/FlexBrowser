@@ -63,6 +63,7 @@ compared to the back/forward buttons */
   border: solid 1px #ccc;
   padding: 5px;
   width: 100%;
+  box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
 
@@ -71,18 +72,22 @@ compared to the back/forward buttons */
   width: 99.5%;
   z-index: 1000;
   display: -webkit-flex;
+  flex-direction: column;
   -webit-flex-direction: column;
 }
 
 #controls #location-form {
+  flex: 1;
   -webkit-flex: 1;
   display: -webkit-flex;
+  flex-direction: column;
   -webit-flex-direction: column;
 }
 
 #controls #center-column {
   padding-left: 10px;
   padding-right: 10px;
+  flex: 1;
   -webkit-flex: 1;
 }
 
@@ -97,8 +102,16 @@ webview {
 
 /* The reload button turns into a spinning trobber */
 .loading #refresh {
+  animation: spinner-animation .5s infinite linear;
   -webkit-animation: spinner-animation .5s infinite linear;
+  transform-origin: 50% 55.5%;
   -webkit-transform-origin: 50% 55.5%;
+}
+
+@keyframes spinner-animation{
+  0% { -webkit-transform: rotate(0deg); }
+  100% {-webkit-transform: rotate(360deg); }
+
 }
 
 @-webkit-keyframes spinner-animation {
