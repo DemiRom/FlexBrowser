@@ -129,6 +129,7 @@ class TabController{
         $(this.currentWebView).show();
 
         this.objects.locationField.value = this.currentWebView.src;
+        this.setTabTitle(this.currentTab, this.currentWebView.getTitle());
     }
 
     resizeTab(){ 
@@ -164,22 +165,13 @@ class Browser{ //Main Browser Class
             browserObject.urlBarSubmit(objects.locationField.value);
         };
 
-        for(var i = 0; i < this.objects.allWebViews.length; i++){
-            this.objects.allWebViews[i].addEventListener('close', () => this.handleExit());
-            this.objects.allWebViews[i].addEventListener('did-start-loading', () => this.handleLoadStart());
-            this.objects.allWebViews[i].addEventListener('did-stop-loading', () => handleLoadStop());
-            this.objects.allWebViews[i].addEventListener('did-fail-load', () => handleLoadAbort());
-            this.objects.allWebViews[i].addEventListener('did-get-redirect-request', () => handleLoadRedirect());
-            this.objects.allWebViews[i].addEventListener('did-finish-load', () => handleLoadCommit());
-        }
-
         this.buttons.addTabButton.onclick = () => {this.addTabButtonDown()};
         this.buttons.removeTabButton.onclick = () => {this.removeTabButtonDown()};
         this.buttons.backButton.onclick = () => {this.backButtonDown()};
         this.buttons.forwardButton.onclick = () => {this.forwardButtonDown()};
         this.buttons.refreshButton.button.onclick = () => {this.reloadButtonDown()};
         this.buttons.homeButton.onclick = () => {this.homeButtonDown()};
-
+        
         window.onresize = () => this.resizeLayout();
 
         this.resizeLayout();
@@ -190,28 +182,59 @@ class Browser{ //Main Browser Class
     }
 
     handleLoadStart() {
-        console.log("Handling Loading Start! Not Implemented Yet!");
+        if(debug) console.log("Load Start");
+        
+        browserObject.buttons.refreshButton.image.classList.add('loading');
     }
 
     handleLoadStop() {
+        if(debug) console.log("Load Stop");
 
+        browserObject.buttons.refreshButton.image.classList.remove('loading');        
     }
 
     handleLoadAbort() {
-
+        console.log("Handling loading aborted! Not Implemented Yet!");
     }
 
     handleLoadRedirect() {
-
+        console.log("Handling redirect! Not Implemented Yet!");
     }
 
     handleLoadCommit() { 
+        this.currentWebView = this.tabController.getCurrentWebView(); 
 
+		this.buttons.backButton.disabled = !this.currentWebView.canGoBack();
+		this.buttons.forwardButton.disabled = !this.currentWebView.canGoForward();
     }
 
+    handleNewWindow(e) { 
+        this.addTabButtonDown(e.url);
+    }
 
-    addTabButtonDown(){
-        this.tabController.addTab(this.homepage);
+    handleNewTitle(e){
+        this.currentTab = this.tabController.getSelectedTabObject().tab;
+        this.tabController.setTabTitle(this.currentTab, e.title);
+    }
+
+    addTabButtonDown(url){
+        
+        var tabObject
+        if(url == null || url === "" ) 
+            tabObject = this.tabController.addTab(this.homepage);
+        else
+            tabObject = this.tabController.addTab(url);
+    
+        var webview = tabObject.webview;
+
+        webview.addEventListener('close', (e) => browserObject.handleExit(e));
+		webview.addEventListener('did-start-loading', (e) => browserObject.handleLoadStart(e));
+		webview.addEventListener('did-stop-loading', (e) => browserObject.handleLoadStop(e));
+		webview.addEventListener('did-fail-load', (e) => browserObject.handleLoadAbort(e));
+		webview.addEventListener('did-get-redirect-request', (e) => browserObject.handleLoadRedirect(e));
+		webview.addEventListener('did-finish-load', (e) => browserObject.handleLoadCommit(e));
+        webview.addEventListener('new-window', (e) => browserObject.handleNewWindow(e));
+        webview.addEventListener('page-title-updated', (e) => browserObject.handleNewTitle(e));
     }
 
     removeTabButtonDown(){
@@ -219,11 +242,11 @@ class Browser{ //Main Browser Class
     }
 
     backButtonDown(){
-        
+        this.currentWebView.goBack();
     }
 
     forwardButtonDown(){
-
+        this.currentWebView.goForward();
     }
 
     reloadButtonDown(){
