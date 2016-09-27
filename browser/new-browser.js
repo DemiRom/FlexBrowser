@@ -263,6 +263,9 @@ class Browser{ //Main Browser Class
     navigateTo(url){
         this.currentWebView = this.tabController.getCurrentWebView();
 
+        if(url.includes('tree:')) console.log("Custom comand tree");
+        if(url.includes('dlws:')) console.log("Custom command website");
+
         if(url.includes('/') || url.includes(':'))
             this.currentWebView.src = url;
         else
