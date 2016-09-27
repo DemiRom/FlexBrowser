@@ -24,7 +24,7 @@ $(document).ready(function(){
 	var webviewTemplate = null;
 	var selectedTab = null;
 
-	doLayout();
+		yout();
 
 	var addTabButton   = $('#add-tab'); 
 	var backButton     = $('#back');

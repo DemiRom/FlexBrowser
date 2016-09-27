@@ -1,197 +1,209 @@
 @import url(https://fonts.googleapis.com/css?family=Oxygen:300);
 
+:root{
+	--body-background-color:     #fff; /*Wouldnt change this because websites without their own background appear to be different color*/ 
+	--main-background-color:     #fff; 
+	--controls-border-bottom:    #ccc;
+
+	--tab-hover-color:           #fff; 
+	--tab-background-color:      #ccc; 
+	
+	--button-hover-color:        #aaa;
+	
+	--location-background-color: #fff;
+	--location-border-color:     #ccc;
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Oxygen', Lucida Grande, Arial, sans-serif;
-  background-color: #fff;
+	margin: 0;
+	padding: 0;
+	font-family: 'Arial', Lucida Grande, Arial, sans-serif;
+	background-color: #fff;
 }
 
 button,
 input {
-  outline: none;
-  padding: 5px;
+	outline: none;
+	padding: 5px;
 }
 
 #controls {
-  border-bottom: solid 1px #ccc;
-  background-color: #fff;
+	border-bottom: solid 1px var(--controls-border-bottom);
+	background-color: var(--main-background-color);
 }
 
 #controls button,
 #controls input {
-  font-size: 20px;
-  line-height: 24px;
-  border-radius: 2px;
+	font-size: 20px;
+	line-height: 24px;
+	border-radius: 2px;
 }
 
 button,
 input[type="submit"],
 button[disabled]:hover {
-  border: solid 1px transparent;
-  background: transparent;
+	border: solid 1px transparent;
+	background: transparent;
 }
 
 button:hover,
 input[type="submit"]:hover {
-  background-color: #eee;
+	background-color: var(--button-hover-color);
 }
 
 button:active,
 input[type="submit"]:active {
-  background: #fff;
+	background: var(--main-background-color);
 }
 
-/* These glyphs are on the small side, make them look more natural when
-compared to the back/forward buttons */
 #controls #home,
 #controls #terminate {
-  font-size: 16px;
+	font-size: 16px;
 }
 
 #controls #reload {
-  font-size: 18px;
+	font-size: 18px;
 }
 
 #controls #zoom,
 #controls #find {
-  font-size: 18px;
+	font-size: 18px;
 }
 
 #location {
-  margin: 5px;
-  border: solid 1px #ccc;
-  padding: 5px;
-  width: 100%;
-  -webkit-box-sizing: border-box;
+	margin: 5px;
+	border: solid 1px var(--location-border-color);
+	padding: 5px;
+	width: 100%;
+	-webkit-box-sizing: border-box;
 }
 
 #controls {
-  position: fixed; 
-  width: 99.5%;
-  z-index: 1000;
-  display: -webkit-flex;
-  -webit-flex-direction: column;
+	position: fixed; 
+	width: 100%;
+	z-index: 1000;
+	display: -webkit-flex;
+	-webit-flex-direction: column;
 }
 
 #controls #location-form {
-  -webkit-flex: 1;
-  display: -webkit-flex;
-  -webit-flex-direction: column;
+	-webkit-flex: 1;
+	display: -webkit-flex;
+	-webit-flex-direction: column;
 }
 
 #controls #center-column {
-  padding-left: 10px;
-  padding-right: 10px;
-  -webkit-flex: 1;
+	padding-left: 10px;
+	padding-right: 10px;
+	-webkit-flex: 1;
 }
 
 #sad-webview,
 webview {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 90%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 90%;
 }
 
 /* The reload button turns into a spinning trobber */
-.loading #refresh {
-  -webkit-animation: spinner-animation .5s infinite linear;
-  -webkit-transform-origin: 50% 55.5%;
+.loading {
+	-webkit-animation: spinner-animation .5s infinite linear;
+	-webkit-transform-origin: 50% 55.5%;
 }
 
 @-webkit-keyframes spinner-animation {
-  0% { -webkit-transform: rotate(0deg); }
-  100% {-webkit-transform: rotate(360deg); }
+	0% { -webkit-transform: rotate(0deg); }
+	100% {-webkit-transform: rotate(360deg); }
 }
 
 /* Due to http://crbug.com/156219 we can't use display: none */
 #sad-webview,
 .exited webview {
-  visibility: hidden;
-  visibility: hidden;
+	visibility: hidden;
+	visibility: hidden;
 }
 
 .exited #sad-webview {
-  visibility: visible;
-  background: #343f51;
-  text-align: center;
-  color: #fff;
+	visibility: visible;
+	background: #343f51;
+	text-align: center;
+	color: #fff;
 }
 
 #sad-webview h2 {
-  font-size: 14px;
+	font-size: 14px;
 }
 
 #sad-webview p {
-  font-size: 11px;
+	font-size: 11px;
 }
 
 #sad-webview-icon {
-  font-size: 96px;
-  margin-bottom: 10px;
+	font-size: 96px;
+	margin-bottom: 10px;
 }
 
 /* Variant of the crashed page when the process is intentionally killed (in that
 case we use a different background color and label). */
 .exited #sad-webview #killed-label {
-  display: none;
+	display: none;
 }
 
 .killed #sad-webview {
-  background: #393058;
+	background: #393058;
 }
 
 .killed #sad-webview #killed-label {
-  display: block;
+	display: block;
 }
 
 .killed #sad-webview #crashed-label {
-  display: none;
+	display: none;
 }
 
 #image {
-  width: 25px;
-  height: 25px;
+	width: 25px;
+	height: 25px;
 }
 
 #refresh {
-  padding-top: 3px;
-  width: 25px;
-  height: 25px;
+	padding-top: 3px;
+	width: 25px;
+	height: 25px;
 }
 
 .tab-control-group{
-  display: table-row;
+	display: table-row;
 }
 
 .tabs{
-  display: table-cell;
-  overflow: hidden;
+	display: table-cell;
+	overflow: hidden;
 }
 
 .tab{
-  display: table-cell;
-  background-color: #ccc;
-  width: 95px;
-  height: 35px;
-  padding-top: 2px;
-  text-align: center;
-  text-overflow: ellipsis;
+	display: table-cell;
+	background-color: var(--tab-background-color);
+	width: 95px;
+	height: 35px;
+	padding-top: 2px;
+	text-align: center;
+	text-overflow: ellipsis;
 }
 
 .tab-selected{
-  background-color: #fff;
+	background-color: var(--main-background-color);
 }
 
 .close-button{
-  display: table-cell;
+	display: table-cell;
 }
 
 .tab:hover{
-  background-color: #fff;
+	background-color: var(--tab-hover-color);
 }
 .tab:active{
-  background-color: #fff;
+	background-color: var(--tab-hover-color);
 }
