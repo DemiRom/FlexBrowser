@@ -32,7 +32,7 @@ class TabController{
     setTabTitle(tab, title){ 
         var t; 
         if(title.length > 8) 
-            t = title.substring(0, 8);
+            t = title.substring(0, 8) + "...";
         else 
             t = title;
         tab.innerHTML = t;
@@ -171,10 +171,6 @@ class Browser{ //Main Browser Class
         this.buttons.forwardButton.onclick = () => {this.forwardButtonDown()};
         this.buttons.refreshButton.button.onclick = () => {this.reloadButtonDown()};
         this.buttons.homeButton.onclick = () => {this.homeButtonDown()};
-        
-        window.onresize = () => this.resizeLayout();
-
-        this.resizeLayout();
     }
 
     handleExit() {
@@ -183,13 +179,13 @@ class Browser{ //Main Browser Class
 
     handleLoadStart() {
         if(debug) console.log("Load Start");
-        
+        browserObject.objects.locationField.value = browserObject.currentWebView.src;
         browserObject.buttons.refreshButton.image.classList.add('loading');
     }
 
     handleLoadStop() {
         if(debug) console.log("Load Stop");
-
+        browserObject.objects.locationField.value = browserObject.currentWebView.src;
         browserObject.buttons.refreshButton.image.classList.remove('loading');        
     }
 
@@ -209,6 +205,7 @@ class Browser{ //Main Browser Class
     }
 
     handleNewWindow(e) { 
+        if(debug) console.log("Open new window!")
         this.addTabButtonDown(e.url);
     }
 
@@ -257,24 +254,6 @@ class Browser{ //Main Browser Class
 
     homeButtonDown(){
         this.navigateTo(this.homepage);
-    }
-
-    resizeLayout(){
-        this.allWebViews = document.querySelectorAll('webview');
-
-        var controlsHeight = this.objects.controls.offsetHeight;
-        var windowWidth = document.documentElement.clientWidth;
-        var windowHeight = document.documentElement.clientHeight;
-        var webviewHeight = windowHeight - controlsHeight - 35;
-
-        for(var i = 0; i < this.objects.allWebViews.length; i++){
-            var obj = this.objects.allWebViews[i];
-
-            console.log(obj);
-
-            obj.style.width = windowWidth + 'px';
-            obj.style.height = webviewHeight + 'px';
-        }
     }
 
     urlBarSubmit(url){
@@ -334,6 +313,4 @@ $(document).ready(function(){ //When the program finally loads the HTML
     }
      
     var browser = new Browser(Buttons, Objects);
-    window.onresize = browser.resizeLayout();
-    browser.resizeLayout();
-}); 
+});
