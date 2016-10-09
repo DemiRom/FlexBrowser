@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
 	"compile": "tsc browser/static/src/*.ts",
-    "build": "npm run build:macos && npm run build:linux && npm run build:windows",
+	"test": "npm run compile && npm run start", 
+	"build": "npm run build:macos && npm run build:linux && npm run build:windows",
     "build:macos": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=darwin --arch=x64 --app-bundle-id=ca.cognizantsoftwaresolutions.flex --app-version=$npm_package_version && cd dist/FlexBrowser-darwin-x64 && zip -ryXq9 ../FlexBrowser-osx-${npm_package_version}.zip FlexBrowser.app",
     "build:linux": "electron-packager . --overwrite --out=dist --ignore='^media$' --prune --platform=linux --arch=x64 --app-bundle-id=ca.cognizantsoftwaresolutions.flex --app-version=$npm_package_version && cd dist/FlexBrowser-linux-x64/ && zip -ryq9 ../FlexBrowser-linux-${npm_package_version}.zip *",
     "build:windows": "electron-packager . --overwrite --asar --out=dist --ignore='^media$' --prune --platform=win32 --arch=x64 --version-string.ProductName=$npm_package_productName --app-version=$npm_package_version && cd dist/FlexBrowser-win32-x64 && zip -ryq9 ../FlexBrowser-windows-${npm_package_version}.zip *"
