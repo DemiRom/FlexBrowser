@@ -2,6 +2,7 @@ doctype html
 html
 	head
 		link(rel='stylesheet', href='css/browser.css')
+		link(rel='stylesheet', href='plugins/css/inject.css')
 		script.
 			window.onresize = resizeLayout;
 			function resizeLayout(){
@@ -20,6 +21,7 @@ html
 			if (typeof module === 'object') {window.module = module; module = undefined;}
 		script(src='https://code.jquery.com/jquery-3.1.0.min.js', integrity='sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=', crossorigin='anonymous')
 		script(src='src/new-browser.js')
+		script(src='plugins/inject.js')
 		script.
 			if (window.module) module = window.module;
 		script.
@@ -28,6 +30,7 @@ html
 			});
 	body
 		.tab-control-group
+			.spacer
 			.tabs
 			button#add-tab(title='Add Tab') +
 			button#remove-tab(title='Remove Tab') -
@@ -43,10 +46,23 @@ html
 			form#location-form
 				#center-column
 					input#location(type='text', value='home.html', onclick='this.focus();this.select()')
+			button#addons-menu(title="Addons")
+				image#image(src='./images/menu.png')
+
 		.web-view-control-group
-			// Where the web views go
+			//Where the web views go
+
+		div.menu.hidden
+			//This is the menu.
+			button#messenger(title='Open Messenger')
+				image#image(src='./images/facebook.png')
+
+		div.overlay.hidden
+			//This is the plugin overlay area - usually iFrame
+			webview#messenger-view(src="https://www.messenger.com", plugins)
+
 		#sad-webview
-			#sad-webview-icon 
+			#sad-webview-icon
 			h2#crashed-label Mayday Mayday, we are going down!
 			h2#killed-label What the %^$# did you do Jim!
 			p
