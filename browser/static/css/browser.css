@@ -1,15 +1,15 @@
 @import url(https://fonts.googleapis.com/css?family=Oxygen:300);
 
 :root{
-	--body-background-color:     #fff; /*Wouldnt change this because websites without their own background appear to be different color*/ 
-	--main-background-color:     #fff; 
+	--body-background-color:     #fff; /*Wouldnt change this because websites without their own background appear to be different color*/
+	--main-background-color:     #fff;
 	--controls-border-bottom:    #ccc;
 
-	--tab-hover-color:           #fff; 
-	--tab-background-color:      #ccc; 
-	
+	--tab-hover-color:           #fff;
+	--tab-background-color:      #ccc;
+
 	--button-hover-color:        #aaa;
-	
+
 	--location-background-color: #fff;
 	--location-border-color:     #ccc;
 }
@@ -19,6 +19,8 @@ body {
 	padding: 0;
 	font-family: 'Arial', Lucida Grande, Arial, sans-serif;
 	background-color: #fff;
+	-webkit-app-region: drag;
+	-webkit-user-select: none;
 }
 
 button,
@@ -79,7 +81,7 @@ input[type="submit"]:active {
 }
 
 #controls {
-	position: fixed; 
+	position: fixed;
 	width: 100%;
 	z-index: 1000;
 	display: -webkit-flex;
@@ -175,6 +177,7 @@ case we use a different background color and label). */
 }
 
 .tab-control-group{
+	margin-left: 100px;
 	display: table-row;
 }
 
@@ -206,4 +209,23 @@ case we use a different background color and label). */
 }
 .tab:active{
 	background-color: var(--tab-hover-color);
+}
+
+.spacer{
+	width: 70px;
+}
+
+.menu{
+	border-right: 1px solid black;
+	position: fixed;
+	float: right;
+	margin-top: 47px;
+	padding-top: 15px;
+	background-color: var(--main-background-color);
+	width: 40px;
+	height: 100%;
+}
+
+.hidden{
+	display: none;
 }

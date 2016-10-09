@@ -2,7 +2,7 @@ const debug = true;
 
 'use strict';
 
-publicTabController = null; 
+publicTabController = null;
 
 class TabController{
     /**
@@ -11,7 +11,7 @@ class TabController{
      * @param {Object} objects
      */
     constructor(buttons, objects){
-        this.buttons = buttons; 
+        this.buttons = buttons;
         this.objects = objects;
 
         this.tabID = 0;
@@ -21,30 +21,33 @@ class TabController{
         var tabLocation = this.objects.tabLocation;
         var webViewLocation = this.objects.webviewLocation;
 
-        for(var i = 1; i < webViewLocation.childNodes.length; i++){
-            if(webViewLocation.childNodes[i].id.toString().substring(4, 9) === this.getSelectedTabObject().tab.id){
+		for(var i = 1; i < webViewLocation.childNodes.length; i++){
+			if(webViewLocation.childNodes[i].id.toString().substring(4, 9) === this.getSelectedTabObject().tab.id){
                 webViewLocation.removeChild(webViewLocation.childNodes[i]);
             }
         }
-        
+
         for(var i = 0; i < tabLocation.childNodes.length; i++){
+			if(this.getSelectedTabObject() == null) return;
             if(tabLocation.childNodes[i].id === this.getSelectedTabObject().tab.id){
                 tabLocation.removeChild(tabLocation.childNodes[i]);
             }
         }
+
+		this.setSelectedTab(document.querySelectorAll('.tab')[document.querySelectorAll('.tab').length-1]);
     }
 
     /**
      * @param {Object} tab
      * @param {String} title
      */
-    setTabTitle(tab, title){ 
-        if(tab == null || tab === "") return; 
+    setTabTitle(tab, title){
+        if(tab == null || tab === "") return;
         if(title == null || title === "") return;
-        var t; 
-        if(title.length > 8) 
+        var t;
+        if(title.length > 8)
             t = title.substring(0, 8) + "...";
-        else 
+        else
             t = title;
         tab.innerHTML = t;
     }
@@ -53,25 +56,30 @@ class TabController{
      * @param {Object} tab
      */
     setSelectedTab(tab){
+		this.lastSelectedTab = this.currentTab;
+
         for(var i = 0; i < this.buttons.tabs.length; i++){
             this.setTabNotSelected(this.buttons.tabs[i]);
         }
         tab.classList.add('tab-selected');
+		this.currentTab = tab;
     }
 
     /**
      * @param {Object} tab
      */
     setTabNotSelected(tab){
-        tab.classList.remove('tab-selected');        
+        tab.classList.remove('tab-selected');
     }
 
     getSelectedTabObject(){
         var _ret = document.querySelector('.tab-selected');
 
+		if(_ret == null) return;
+
         if(debug) console.log(_ret);
 
-        return { 
+        return {
             tab : _ret,
             webview : document.querySelector('#web-object-'+_ret.id)
         }
@@ -84,30 +92,30 @@ class TabController{
     addTab(url){
         if(this.currentTab != null) this.setTabNotSelected(this.currentTab);
 
-        var webviewTemplate = "<div id='web-tab-"+this.tabID+"'><webview id='web-object-tab-"+this.tabID+"' src='"+url+"' allowpopups disablewebsecurity plugins></webview></div>"; 
+        var webviewTemplate = "<div id='web-tab-"+this.tabID+"'><webview id='web-object-tab-"+this.tabID+"' src='"+url+"' allowpopups disablewebsecurity plugins></webview></div>";
         this.objects.webviewLocation.innerHTML += webviewTemplate;
 
         this.currentWebView = document.querySelector('#web-object-tab-'+this.tabID);
 
         var title = "About: Blank";
 
-        var tabTemplate = "<button class='tab' id='tab-"+this.tabID+"' title="+title+">"+title+"</button>"; 
+        var tabTemplate = "<button class='tab' id='tab-"+this.tabID+"' title="+title+">"+title+"</button>";
         this.objects.tabLocation.innerHTML += tabTemplate;
 
         this.buttons.tabs = document.querySelectorAll('.tab');
         this.currentTab = document.querySelector('#tab-'+this.tabID);
 
         this.setSelectedTab(this.currentTab);
-        
+
         var tabs = this.buttons.tabs;
 
         if(debug) console.log(tabs);
-        
+
         publicTabController = this;
 
         this.currentWebView.addEventListener('dom-ready', function(e){
             publicTabController.setTabTitle(
-                publicTabController.currentTab, 
+                publicTabController.currentTab,
                 publicTabController.currentWebView.getTitle()
             );
             publicTabController.objects.locationField.value = publicTabController.currentWebView.src;
@@ -145,7 +153,7 @@ class TabController{
 
         this.objects.allWebViews = document.querySelectorAll('webview');
         var webViews = this.objects.allWebViews;
-    
+
 
         for(var i = 0; i < webViews.length; i++){
             $(webViews[i]).hide();
@@ -157,15 +165,16 @@ class TabController{
         this.setTabTitle(this.currentTab, this.currentWebView.getTitle());
     }
 
-    resizeTab(){ 
+    resizeTab(){
 
     }
 
-    getCurrentWebView(){ 
+    getCurrentWebView(){
         return this.currentWebView;
     }
 }
-browserObject = null; 
+
+browserObject = null;
 
 class Browser{ //Main Browser Class
     /**
@@ -175,23 +184,24 @@ class Browser{ //Main Browser Class
      */
     constructor(buttons, objects){
         this.buttons = buttons;
-        this.objects = objects;   
+        this.objects = objects;
         this.homepage = "http://www.google.ca";
+		this.menuClicked = false;
 
         this.tabController = new TabController(buttons, objects);
-        
+
         //Create first webview and tab.
         this.tabController.addTab(this.homepage);
 
         this.currentWebView = this.tabController.getSelectedTabObject().webview;
 
         this.objects.locationField.value = "";
-        
+
         browserObject = this;
 
         this.objects.locationForm.onsubmit = function(e) {
             if(debug) console.log('Submitted!');
-            e.preventDefault(); 
+            e.preventDefault();
             browserObject.urlBarSubmit(objects.locationField.value);
         };
 
@@ -201,6 +211,7 @@ class Browser{ //Main Browser Class
         this.buttons.forwardButton.onclick = () => {this.forwardButtonDown()};
         this.buttons.refreshButton.button.onclick = () => {this.reloadButtonDown()};
         this.buttons.homeButton.onclick = () => {this.homeButtonDown()};
+		this.buttons.menuButton.onclick = () => {this.menuButtonDown()};
     }
 
     handleExit() {
@@ -216,7 +227,7 @@ class Browser{ //Main Browser Class
     handleLoadStop() {
         if(debug) console.log("Load Stop");
         browserObject.objects.locationField.value = browserObject.currentWebView.src;
-        browserObject.buttons.refreshButton.image.classList.remove('loading');        
+        browserObject.buttons.refreshButton.image.classList.remove('loading');
     }
 
     handleLoadAbort() {
@@ -227,8 +238,8 @@ class Browser{ //Main Browser Class
         console.log("Handling redirect! Not Implemented Yet!");
     }
 
-    handleLoadCommit() { 
-        this.currentWebView = this.tabController.getCurrentWebView(); 
+    handleLoadCommit() {
+        this.currentWebView = this.tabController.getCurrentWebView();
 
 		this.buttons.backButton.disabled = !this.currentWebView.canGoBack();
 		this.buttons.forwardButton.disabled = !this.currentWebView.canGoForward();
@@ -237,11 +248,11 @@ class Browser{ //Main Browser Class
     /**
      * @param {Object} e
      */
-    handleNewWindow(e) { 
+    handleNewWindow(e) {
         if(debug) console.log("Open new window!")
         this.addTabButtonDown(e.url);
     }
-    
+
     /**
      * @param {Object} e
      */
@@ -254,13 +265,13 @@ class Browser{ //Main Browser Class
      * @param {String} url
      */
     addTabButtonDown(url){
-        
+
         var tabObject
-        if(url == null || url === "" ) 
+        if(url == null || url === "" )
             tabObject = this.tabController.addTab(this.homepage);
         else
             tabObject = this.tabController.addTab(url);
-    
+
         var webview = tabObject.webview;
 
         webview.addEventListener('close', (e) => browserObject.handleExit(e));
@@ -295,6 +306,11 @@ class Browser{ //Main Browser Class
         this.navigateTo(this.homepage);
     }
 
+	menuButtonDown(){
+		this.menuClicked = !this.menuClicked;
+		this.menuClicked ? this.objects.menuObject.classList.remove('hidden') : this.objects.menuObject.classList.add('hidden');
+	}
+
     /**
      * @param {String} url
      */
@@ -303,7 +319,7 @@ class Browser{ //Main Browser Class
     }
 
     treeCommand(){
-        var html = "<html><body> </body></html>"; 
+        var html = "<html><body> </body></html>";
     }
 
     /**
@@ -314,7 +330,8 @@ class Browser{ //Main Browser Class
 
         if(url.includes('tree:')) console.log("Custom command: tree");
         if(url.includes('dlws:')) console.log("Custom command: website download");
-        
+        if(url.includes('cmnd:')) console.log("Custom command: JS Direct console");
+
         if(url.includes('ipv4:')) {
             this.navigateTo(url.substring(5, url.length));
             return;
@@ -344,7 +361,7 @@ class Browser{ //Main Browser Class
             _ret = this.homepage;
         else if(!input.includes('.') && !input.includes(' '))
             _ret = "http://www."+input+".com";
-        else if(input.includes('.ca') | input.includes('.com') || input.includes('.org'))
+        else if(input.includes('.ca') | input.includes('.com') || input.includes('.org') || input.includes('.net'))
             _ret = "http://www."+input;
         else if(input.includes(' '))
             _ret = "http://www.google.ca/search?q="+input;
@@ -358,25 +375,27 @@ class Browser{ //Main Browser Class
 $(document).ready(function(){ //When the program finally loads the HTML
     var Buttons = {
         backButton      : document.querySelector('#back'),
-        forwardButton   : document.querySelector('#forward'), 
+        forwardButton   : document.querySelector('#forward'),
         refreshButton   : {
                             button : document.querySelector('#reload'),
                             image  : document.querySelector('#refresh')
-                        }, 
-        homeButton      : document.querySelector('#home'), 
+                        },
+        homeButton      : document.querySelector('#home'),
         addTabButton    : document.querySelector('#add-tab'),
         removeTabButton : document.querySelector('#remove-tab'),
-        tabs            : document.querySelectorAll('.tab')
+        tabs            : document.querySelectorAll('.tab'),
+		menuButton      : document.querySelector('#addons-menu')
     }
 
-    var Objects = { 
+    var Objects = {
         locationField   : document.querySelector('#location'),
         locationForm    : document.querySelector('#location-form'),
         controls        : document.querySelector('#controls'),
         webviewLocation : document.querySelector('.web-view-control-group'),
         tabLocation     : document.querySelector('.tabs'),
-        allWebViews     : document.querySelectorAll('webview')
+        allWebViews     : document.querySelectorAll('webview'),
+		menuObject      : document.querySelector('.menu')
     }
-     
+
     var browser = new Browser(Buttons, Objects);
 });
